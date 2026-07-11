@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Services - {{ company_name }}{% endblock %}
+
+{% block content %}
+<section class="home-cover" id="home">
+    <div class="home-cover-copy">
+        <span class="home-kicker">{{ home_kicker }}</span>
+        <h2>{{ home_title }}</h2>
+        <p>{{ home_intro }}</p>
+        <div class="home-leadership">
+            <span><strong>Founder</strong>{{ founder_name }}</span>
+            <span><strong>CEO</strong>{{ ceo_name }}</span>
+            <span><strong>MD</strong>{{ md_name }}</span>
+        </div>
+    </div>
+    <div class="home-cover-visual" aria-hidden="true">
+        <img src="{{ url_for('static', filename='images/islam.png') }}" alt="">
+        <span>ISLAM GOVERNMENT</span>
+    </div>
+</section>
+
+<section class="page-title-bar compact service-section-title" id="services">
+    <h2>{{ services_heading }}</h2>
+    <p>{{ services_subtitle }}</p>
+</section>
+
+{% if services %}
+<section class="service-grid">
+    {% for service in services %}
+    <a href="{{ url_for('service_detail', service_id=service.id) }}" class="service-card">
+        <div class="service-card-body">
+            <h3>{{ service.name }}</h3>
+            <p class="service-amount">₹ {{ "%.0f"|format(service.amount) if service.amount == service.amount|int else service.amount }}</p>
+            <span class="service-link">Apply Now →</span>
+        </div>
+    </a>
+    {% endfor %}
+</section>
+{% else %}
+<div class="empty-state">
+    <p>No services available yet. Admin can add services from the Manage menu.</p>
+</div>
+{% endif %}
+{% endblock %}
