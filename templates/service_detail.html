@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}{{ service.name }} - {{ company_name }}{% endblock %}
+
+{% block content %}
+<style>
+    .service-page {
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .service-page .service-hero {
+        background: linear-gradient(135deg, #eaf3ff 0%, #ffffff 55%, #dbeafe 100%);
+        border: 2px solid #bfdbfe;
+        border-radius: 14px;
+        padding: 1.5rem 1.75rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 4px 18px rgba(37, 99, 235, 0.12);
+    }
+
+    .service-page .service-hero h2 {
+        margin: 0 0 0.5rem;
+        color: #0f2f73;
+        font-size: 1.85rem;
+        line-height: 1.25;
+    }
+
+    .service-page .service-fee-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #1d4ed8;
+        color: #fff;
+        font-size: 1.35rem;
+        font-weight: 700;
+        padding: 0.55rem 1.1rem;
+        border-radius: 999px;
+        margin: 0;
+    }
+
+    .service-page .service-fee-badge span {
+        font-size: 0.85rem;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+
+    .service-page .required-docs-panel {
+        margin-bottom: 1.25rem;
+    }
+
+    .service-page .certificate-showcase {
+        background: #fff;
+        border-radius: 14px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border-top: 5px solid #1d4ed8;
+    }
+
+    .service-page .certificate-showcase h3 {
+        margin: 0 0 1rem;
+        color: #0f2f73;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .service-page .certificate-clickable {
+        display: block;
+        width: min(100%, 560px);
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0;
+        border: 2px solid #bfdbfe;
+        border-radius: 10px;
+        background: #fafbfc;
+        cursor: pointer;
+        transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+
+    .service-page .certificate-clickable:hover,
+    .service-page .certificate-clickable.confirmed {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+        transform: translateY(-1px);
+    }
+
+    .service-page .certificate-image {
+        width: 100%;
+        max-width: 100%;
+        max-height: 330px;
+        min-height: 180px;
+        height: 300px;
+        object-fit: contain;
+        border: none;
+        border-radius: 7px 7px 0 0;
+        background: #fff;
+        display: block;
+    }
+
+    .service-page .certificate-hint {
+        display: block;
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+        color: #0f2f73;
+        font-weight: 700;
+        background: #eaf3ff;
+        text-align: center;
+        border-radius: 0 0 7px 7px;
+    }
+
+    .service-page .certificate-placeholder {
+        padding: 4rem 1.5rem;
+        text-align: center;
+        background: #f5f8fa;
+        border: 2px dashed #c5d3de;
+        border-radius: 10px;
+        color: #6a8090;
+        min-height: 280px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .service-page .amount-saved-msg {
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        background: #d4edda;
+        color: #155724;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-align: center;
+    }
+
+    .service-page .amount-saved-msg.hidden {
+        display: none;
+    }
+
+    .service-page .application-panel {
+        background: #fff;
+        border-radius: 14px;
+        padding: 1.5rem 1.75rem 1.75rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border-left: 5px solid #1d4ed8;
+    }
+
+    .service-page .application-panel h3 {
+        margin: 0 0 0.35rem;
+        color: #0f2f73;
+        font-size: 1.25rem;
+    }
+
+    .service-page .application-panel .form-note {
+        margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .service-page .certificate-image {
+            min-height: 170px;
+            height: 240px;
+        }
+
+        .service-page .service-hero h2 {
+            font-size: 1.45rem;
+        }
+    }
+</style>
+
+<div class="service-page">
+    <section class="breadcrumb">
+        <a href="{{ url_for('index') }}">← Back to Online Services</a>
+    </section>
+
+    <section class="service-hero">
+        <h2>{{ service.name }}</h2>
+        <p class="service-fee-badge">
+            <span>Service Fee</span>
+            ₹ {{ "%.0f"|format(service.amount) if service.amount == service.amount|int else service.amount }}
+        </p>
+    </section>
+
+    <section class="required-docs-panel">
+        <div class="panel-heading">
+            <span class="panel-icon">📋</span>
+            <h3>Required Documents to Apply This Service</h3>
+        </div>
+        {% if required_documents %}
+        <ol class="required-docs-list">
+            {% for doc in required_documents %}
+            <li>
+                <strong>{{ doc.name }}</strong>
+                {% if doc.description %}
+                <span class="doc-desc">— {{ doc.description }}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <p class="no-docs-msg">No required documents assigned yet. Admin can link documents from Manage Services.</p>
+        {% endif %}
+    </section>
+
+    <section class="certificate-showcase">
+        <h3>Sample Certificate — Click to Confirm Amount</h3>
+        {% if service.image_filename %}
+        <button type="button" class="certificate-clickable" id="certificate-btn" aria-label="Confirm service amount">
+            <img
+                src="{{ url_for('uploaded_file', filename=service.image_filename) }}"
+                alt="{{ service.name }} sample certificate"
+                class="certificate-image"
+            >
+            <span class="certificate-hint">Click certificate to confirm amount ₹ {{ "%.0f"|format(service.amount) if service.amount == service.amount|int else service.amount }}</span>
+        </button>
+        <div class="amount-saved-msg hidden" id="amount-saved-msg">
+            ✓ Amount ₹ {{ "%.0f"|format(service.amount) if service.amount == service.amount|int else service.amount }} confirmed for this application
+        </div>
+        {% else %}
+        <div class="certificate-placeholder">
+            <p>No sample certificate uploaded yet.</p>
+            <p class="hint">Admin can upload a sample image from the Manage menu.</p>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="application-panel">
+        <h3>Customer Application Form</h3>
+        <p class="form-note">Enter customer details below. Name, mobile, Aadhaar, and service amount are saved directly to Excel.</p>
+
+        {% if errors %}
+        <div class="flash-messages inline">
+            {% for error in errors %}
+            <div class="flash flash-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="post" class="customer-form" id="customer-form">
+            <input type="hidden" name="amount" value="{{ service.amount }}">
+
+            <label for="customer_name">Customer Name</label>
+            <input
+                type="text"
+                id="customer_name"
+                name="customer_name"
+                value="{{ form_data.get('customer_name', '') }}"
+                required
+                minlength="2"
+                placeholder="Enter full name"
+            >
+
+            <label for="mobile">Mobile Number</label>
+            <input
+                type="tel"
+                id="mobile"
+                name="mobile"
+                value="{{ form_data.get('mobile', '') }}"
+                required
+                pattern="\d{10}"
+                maxlength="10"
+                placeholder="10 digit mobile number"
+            >
+
+            <label for="aadhaar">Aadhaar Number</label>
+            <input
+                type="text"
+                id="aadhaar"
+                name="aadhaar"
+                value="{{ form_data.get('aadhaar', '') }}"
+                pattern="\d{12}"
+                maxlength="12"
+                placeholder="Optional. Default: 123456789000"
+            >
+
+            <button type="submit" class="btn btn-primary">Save to Excel</button>
+        </form>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/customer-form.js') }}"></script>
+{% endblock %}
