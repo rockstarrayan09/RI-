@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: ri-enterprises
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: PERSISTENT_DIR
+        value: /var/data
+    disk:
+      name: ri-enterprises-data
+      mountPath: /var/data
+      sizeGB: 1
