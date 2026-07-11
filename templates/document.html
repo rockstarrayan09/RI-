@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Mandatory Documents - {{ company_name }}{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>Mandatory Documents</h2>
+    <p>Please bring the following documents when applying for any online service at {{ company_name }}.</p>
+</section>
+
+{% if documents %}
+<section class="document-list">
+    {% for doc in documents %}
+    <article class="document-card{% if doc.is_mandatory %} mandatory{% endif %}">
+        <div class="document-badge">
+            {% if doc.is_mandatory %}
+            <span class="badge badge-required">Mandatory</span>
+            {% else %}
+            <span class="badge badge-optional">Optional</span>
+            {% endif %}
+        </div>
+        <h3>{{ doc.name }}</h3>
+        {% if doc.description %}
+        <p>{{ doc.description }}</p>
+        {% endif %}
+    </article>
+    {% endfor %}
+</section>
+{% else %}
+<div class="empty-state">
+    <p>No mandatory documents listed yet. Admin can add them from the Manage menu.</p>
+</div>
+{% endif %}
+
+<section class="cta-section">
+    <a href="{{ url_for('index') }}" class="btn btn-primary">View Online Services</a>
+</section>
+{% endblock %}
