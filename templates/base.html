@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ company_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="top-strip">
+        <div class="container top-strip-inner">
+            <span>Government of Tamil Nadu</span>
+            <span class="top-strip-divider">|</span>
+            <span>e-Sevai Maiyam</span>
+        </div>
+    </div>
+
+    <div class="gov-banner">
+        <div class="container gov-banner-inner">
+            <img
+                src="{{ url_for('static', filename='images/islam.png') }}"
+                alt="Government of Tamil Nadu emblem"
+                class="gov-emblem"
+            >
+            <div class="gov-text">
+    <span class="gov-label tamil">இஸ்லாம் அரசு</span>
+    <span class="gov-label">Government of World</span>
+    <span class="gov-sub">e-Sevai Maiyam — Common Service Centre</span>
+</div>
+
+<div class="bismillah">
+    ﷽
+</div>
+
+<div class="company-badge">
+                <strong>{{ company_name }}</strong>
+                <span>Founder: {{ founder_name }}</span>
+                <span>CEO: {{ ceo_name }}</span>
+                <span>MD: {{ md_name }}</span>
+            </div>
+        </div>
+    </div>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="brand">
+                <h1><a href="{{ url_for('index') }}">e-Sevai Online Services</a></h1>
+                <p class="tagline">{{ company_tagline }}</p>
+            </div>
+            <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
+            <nav class="site-nav">
+                <a href="{{ url_for('index', _anchor='home') }}">Home</a>
+                <a href="{{ url_for('index', _anchor='services') }}">Services</a>
+                <a href="{{ url_for('admin_login') }}">Manage Menu</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; {{ company_name }}</p>
+            <p class="footer-leadership">Founder: {{ founder_name }} | CEO: {{ ceo_name }} | MD: {{ md_name }}</p>
+            <p class="footer-note">Authorized e-Sevai Maiyam Service Centre — Tamil Nadu</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
